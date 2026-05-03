@@ -1,0 +1,11 @@
+# Install TradingAgents first (one-time setup):
+#   git clone https://github.com/TauricResearch/TradingAgents.git
+#   cd TradingAgents && pip install .
+#   cd ../trading-bot && pip install -r requirements.txt
+
+alpaca-py>=0.36.0
+yfinance>=0.2.55
+APScheduler>=3.10.4
+pandas>=2.0.0
+numpy>=1.24.0
+python-dotenv>=1.0.0

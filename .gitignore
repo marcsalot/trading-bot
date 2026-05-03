@@ -1,0 +1,16 @@
+# Secrets
+.env
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Runtime data (cache and results live outside the repo in ~/.trading-bot/)
+.trading-bot/
+
+# macOS
+.DS_Store
