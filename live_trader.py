@@ -93,6 +93,21 @@ def run_daily() -> None:
     open_trades = _load_open_trades()
     today_str   = str(date.today())
 
+    # ---- Determine today's watchlist ---------------------------------------
+    if config.WATCHLIST_MODE == "dynamic":
+        from screener import screen_universe
+        print("\n[Screener] Building dynamic watchlist...")
+        screened = screen_universe(open_tickers=set(open_trades.keys()))
+        if screened:
+            print(f"  Selected: {screened}")
+        else:
+            print("  No candidates passed filters — falling back to static WATCHLIST")
+        # Always include open positions so we can act on Sell/Underweight signals
+        watchlist = screened or config.WATCHLIST
+        watchlist = list(dict.fromkeys(watchlist + list(open_trades.keys())))
+    else:
+        watchlist = config.WATCHLIST
+
     # ---- 1. Close positions past their holding period ----------------------
     print("\n[Step 1] Checking holding periods...")
     for ticker, info in list(open_trades.items()):
@@ -111,7 +126,7 @@ def run_daily() -> None:
 
     # ---- 2. Generate signals and act ---------------------------------------
     print("\n[Step 2] Generating signals...")
-    for ticker in config.WATCHLIST:
+    for ticker in watchlist:
         print(f"\n  {ticker}: calling propagate()...")
         try:
             _, signal = ta.propagate(ticker, today_str)

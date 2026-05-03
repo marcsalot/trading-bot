@@ -53,6 +53,17 @@ SCHEDULE_TIME_ET = "09:45"  # fire daily at this time (Eastern), Mon–Fri
 ALPACA_PAPER = True  # True = paper trading; False = live (be careful!)
 
 # ---------------------------------------------------------------------------
+# Dynamic watchlist screener
+# Set WATCHLIST_MODE = "dynamic" to replace the static WATCHLIST each day.
+# WATCHLIST is still used as a fallback if the screener returns no results.
+# ---------------------------------------------------------------------------
+WATCHLIST_MODE          = "static"    # "static" | "dynamic"
+SCREENER_UNIVERSE_SIZE  = 50          # top-N most-actives fetched from Alpaca
+SCREENER_WATCHLIST_SIZE = 5           # tickers to trade each day
+SCREENER_MIN_PRICE      = 10.0        # exclude stocks below this price (USD)
+SCREENER_MIN_AVG_VOLUME = 1_000_000   # min 20-day avg daily share volume
+
+# ---------------------------------------------------------------------------
 # TradingAgents LLM config
 # claude-opus-4-7  → deep reasoning (research manager, portfolio manager)
 # claude-haiku-4-5 → quick tasks (signal extraction, formatting)
