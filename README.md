@@ -1,5 +1,7 @@
 # trading-bot
 
+[![Tests](https://github.com/marcsalot/trading-bot/actions/workflows/test.yml/badge.svg)](https://github.com/marcsalot/trading-bot/actions/workflows/test.yml)
+
 A long-only equities trading bot powered by [TradingAgents](https://github.com/TauricResearch/TradingAgents) (multi-agent LLM research framework) and [Alpaca](https://alpaca.markets) (paper/live order execution).
 
 Each trading day the bot runs a multi-agent debate to produce a directional signal (`Buy`, `Overweight`, `Hold`, `Underweight`, `Sell`) for every ticker on your watchlist. Actionable signals are translated into fractional-notional market orders on Alpaca. Positions are automatically closed after a configurable holding period.
@@ -105,4 +107,29 @@ TESTING.md        Cache-injection testing procedure
 
 ## Testing
 
-See [TESTING.md](TESTING.md) for the cache-injection technique — a way to verify the backtest logic for any signal type without hitting the LLM API.
+The test suite runs automatically on every push and pull request via GitHub Actions (Python 3.13, ubuntu-latest). No API keys are required — `TradingAgentsGraph` is stubbed and `yfinance` is mocked.
+
+**Run locally:**
+
+```bash
+.venv/bin/pytest tests/ -v
+```
+
+**Test coverage:**
+
+| File | Tests | What's covered |
+|---|---|---|
+| `tests/test_backtest.py` | 22 | `_flatten_columns`, `_next_open_after`, `_close_n_days_later`; `run_backtest` integration for all 5 signal types with verified entry/exit prices, returns, and alpha |
+| `tests/test_performance.py` | 13 | `compute_metrics` — compounding, win rate, alpha, drawdown, empty input, output keys |
+
+**Manual testing — cache injection:**
+
+For ad-hoc verification of any signal or date without hitting the LLM, inject a signal directly into the cache and run the backtest for that date. See [TESTING.md](TESTING.md) for the full procedure and a worked example.
+
+**Live mode testing:**
+
+```bash
+.venv/bin/python run.py live --now
+```
+
+Fires the daily job once immediately against your Alpaca paper account.
